@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watchlist - Anime & TV Series Tracker</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script defer src="js/watchlist.js"></script>
+</head>
+<body>
+    <header>
+        <h1>My Watchlist</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="watchlist.html">Watchlist</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li id="authLink"><a href="auth.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="watchlist-section">
+            <h2>Your Watchlist</h2>
+            <input type="text" id="animeInput" placeholder="Enter Anime Name" class="input-box">
+            <button onclick="addAnime()" class="btn">Add to Watchlist</button>
+            <ul id="animeList" class="watchlist"></ul>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 Anime Tracker. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", loadWatchlist);
+
+        function addAnime() {
+            const input = document.getElementById("animeInput");
+            const animeName = input.value.trim();
+            if (animeName === "") return;
+
+            const list = document.getElementById("animeList");
+            const li = document.createElement("li");
+            li.textContent = animeName;
+            
+            const removeBtn = document.createElement("button");
+            removeBtn.textContent = "Remove";
+            removeBtn.classList.add("remove-btn");
+            removeBtn.onclick = function () {
+                li.remove();
+                saveWatchlist();
+            };
+
+            li.appendChild(removeBtn);
+            list.appendChild(li);
+            input.value = "";
+            saveWatchlist();
+        }
+
+        function saveWatchlist() {
+            const list = document.getElementById("animeList");
+            const items = [];
+            list.querySelectorAll("li").forEach(li => {
+                items.push(li.firstChild.textContent);
+            });
+            localStorage.setItem("watchlist", JSON.stringify(items));
+        }
+
+        function loadWatchlist() {
+            const list = document.getElementById("animeList");
+            const savedItems = JSON.parse(localStorage.getItem("watchlist")) || [];
+            savedItems.forEach(animeName => {
+                const li = document.createElement("li");
+                li.textContent = animeName;
+                
+                const removeBtn = document.createElement("button");
+                removeBtn.textContent = "Remove";
+                removeBtn.classList.add("remove-btn");
+                removeBtn.onclick = function () {
+                    li.remove();
+                    saveWatchlist();
+                };
+
+                li.appendChild(removeBtn);
+                list.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
